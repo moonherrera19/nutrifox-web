@@ -8,11 +8,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import Image from "next/image";
+import { RegistroForm } from "@/components/login/registro-usuario-form";
 
-import { LoginForm } from "@/components/login/iniciar-sesion-form";
-
-export default function Page() {
+export default function LoginForm() {
   return (
     <div className="flex h-screen w-full items-center justify-center px-4">
       <Card className="mx-auto max-w-sm w-full">
@@ -27,14 +28,14 @@ export default function Page() {
               alt="avatar"
             />
           </div>
-          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardTitle className="text-2xl">Registrarse</CardTitle>
           <CardDescription></CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
-            <LoginForm />
+            <RegistroForm></RegistroForm>
             <Button variant="outline" className="w-full" asChild>
-              <Link href="/registro">Registrarse</Link>
+              <Link href="/">Regresar a Login</Link>
             </Button>
           </div>
         </CardContent>
