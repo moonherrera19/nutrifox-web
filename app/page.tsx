@@ -12,6 +12,7 @@ import Image from "next/image";
 
 import { LoginForm } from "@/components/login/iniciar-sesion-form";
 
+
 export default function Page() {
   return (
     <div className="flex h-screen w-full items-center justify-center px-4">
