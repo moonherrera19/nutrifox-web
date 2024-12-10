@@ -39,14 +39,11 @@ export function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL_API}/usuarios/login`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      }
-    );
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
     const data = await res.json();
     if (res.ok) {
       const user = JSON.parse(

@@ -48,14 +48,11 @@ export function RegistroForm() {
     });
     const data = await res.json();
     if (res.ok) {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/usuarios/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
-        }
-      );
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
       const userData = await res.json();
       const user = JSON.parse(
         Buffer.from(userData.accessToken.split(".")[1], "base64").toString()

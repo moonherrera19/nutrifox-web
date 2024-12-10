@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+// import { useState } from "react";
 
 import {
   Sidebar,
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useCheckActive from "@/hooks/use-check-active";
 
 import Link from "next/link";
@@ -32,7 +32,7 @@ export default function BarraLateral() {
   const { checkActive } = useCheckActive();
   const [user, setUser] = useAtom(userAtom);
 
-  console.log(user)
+  console.log(user);
 
   const router = useRouter();
   return (
