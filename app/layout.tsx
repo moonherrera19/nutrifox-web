@@ -7,7 +7,7 @@ import { Provider } from "jotai";
 
 export const metadata: Metadata = {
   title: "Nutrifox-tec",
-  description: "página web utilizada para el cobro de becas del ITESZ",
+  description: "página web utilizada para el cobro de becas alimenticias del ITESZ",
 };
 
 export default function RootLayout({

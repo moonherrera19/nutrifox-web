@@ -3,10 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,21 +15,11 @@ import {
   FormRootError,
 } from "@/components/ui/form";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-
-//import { es } from "date-fns/locale";
-
-
+import { Switch } from "@/components/ui/switch"; 
 import useApi from "@/lib/api";
 
-//validamos si lo que colocan es valido  para los campos propuestos 
+// Validación del formulario
 const formSchema = z.object({
   nombre: z.string().min(10, { message: "Coloca un nombre valido" }),
   apellido: z.string().min(10, { message: "Coloca un apellido valido" }),
@@ -46,11 +33,11 @@ const formSchema = z.object({
   credencial: z
     .any()
     .refine((file) => file?.length == 1, "Coloca una imagen valida"),
-  estatus: z.boolean(), // Agregar el campo estatus al esquema
+  estatus: z.boolean(),
 });
 
 export function EstudiantesForm() {
-  //const fetchWithAuth = useApi();
+  const fetchWithAuth = useApi();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,47 +47,49 @@ export function EstudiantesForm() {
       numeroControl: "",
       grado: "",
       grupo: "",
-      domicilio:"",
+      domicilio: "",
       curp: undefined,
-      credencial:undefined,
-
+      credencial: undefined,
     },
     mode: "all",
   });
 
-  const curpRef = form.register("curp"); 
+  const curpRef = form.register("curp");
   const credencialRef = form.register("credencial");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const formData = new FormData();
-    formData.append("nombre", values.nombre); 
+    formData.append("nombre", values.nombre);
     formData.append("apellido", values.apellido);
     formData.append("numeroControl", values.numeroControl);
     formData.append("grado", values.grado);
     formData.append("grupo", values.grupo);
     formData.append("domicilio", values.domicilio);
-  
 
     if (values.curp[0]) formData.append("curp", values.curp[0]);
     if (values.credencial[0]) formData.append("credencial", values.credencial[0]);
 
-    // const res = await fetchWithAuth("/convocatorias", {
-    //   method: "POST",
-    //   body: formData,
-    // });
-
-    const res = await fetch("http://localhost:3001/estudiantes", {
+    const resp = await fetchWithAuth("/estudiantes", {
       method: "POST",
       body: formData,
     });
 
-    console.log(res);
-    console.log(await res.json());
+    // Log the response to check for success or errors
+    console.log(resp);
+    console.log(await resp.json());
+
+    // Optionally, you can handle the response here, e.g., show a success message or error message to the user
+    if (resp.ok) {
+      // Show success message
+    } else {
+      // Show error message
+    }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {/* Campos del formulario */}
         <FormField
           control={form.control}
           name="nombre"
@@ -108,16 +97,13 @@ export function EstudiantesForm() {
             <FormItem>
               <FormLabel>Nombre:</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Juan"
-                  {...field}
-                />
+                <Input placeholder="Juan" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-         
+
         <FormField
           control={form.control}
           name="apellido"
@@ -125,16 +111,13 @@ export function EstudiantesForm() {
             <FormItem>
               <FormLabel>Apellido:</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Herrera"
-                  {...field}
-                />
+                <Input placeholder="Herrera" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-      
+
         <FormField
           control={form.control}
           name="numeroControl"
@@ -142,10 +125,7 @@ export function EstudiantesForm() {
             <FormItem>
               <FormLabel>Número de Control:</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="2xxxxxxx"
-                  {...field}
-                />
+                <Input placeholder="2xxxxxxx" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -159,17 +139,13 @@ export function EstudiantesForm() {
             <FormItem>
               <FormLabel>Grado:</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="4"
-                  {...field}
-                />
+                <Input placeholder="4" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-            <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+
         <FormField
           control={form.control}
           name="grupo"
@@ -177,21 +153,33 @@ export function EstudiantesForm() {
             <FormItem>
               <FormLabel>Grupo:</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="A,B,C,D,F"
-                  {...field}
-                />
+                <Input placeholder="A,B,C,D,F" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
-        />  
+        />
+
+        <FormField
+          control={form.control}
+          name="domicilio"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Domicilio:</FormLabel>
+              <FormControl>
+                <Input placeholder="Calle 123" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="curp"
           render={({}) => (
             <FormItem>
-              <FormLabel>curp</FormLabel>
+              <FormLabel>CURP:</FormLabel>
               <FormControl>
                 <Input
                   type="file"
@@ -204,15 +192,13 @@ export function EstudiantesForm() {
             </FormItem>
           )}
         />
-        
-// para cargar la imagen de la credencial
-        
+
         <FormField
           control={form.control}
           name="credencial"
           render={({}) => (
             <FormItem>
-              <FormLabel>Credencial</FormLabel>
+              <FormLabel>Credencial:</FormLabel>
               <FormControl>
                 <Input
                   type="file"
@@ -225,14 +211,28 @@ export function EstudiantesForm() {
             </FormItem>
           )}
         />
-       <FormRootError />
+
+        <FormField
+          control={form.control}
+          name="estatus"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center gap-2">
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <FormLabel>Estatus:</FormLabel>
+            </FormItem>
+          )}
+        />
+
+        <FormRootError />
         <Button type="submit" className="w-full">
           Enviar
         </Button>
-        <Button type="submit" className="w-full">
-          Modificar
-        </Button>
-        </form>
-       </Form>
+      </form>
+    </Form>
   );
 }

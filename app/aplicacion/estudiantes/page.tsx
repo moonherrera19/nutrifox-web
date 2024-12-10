@@ -1,4 +1,4 @@
-import { EstudiantesFrom } from "@/components/estudiantes/lista-datos.txs";
+import { EstudiantesForm } from "@/components/estudiantes/lista-datos";
 export default function Page() {
   return <EstudiantesForm />;
 }
