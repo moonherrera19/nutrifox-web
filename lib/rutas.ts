@@ -7,7 +7,7 @@ type Ruta = {
 export const rutas: Ruta[] = [
   {
     label: "Perfil",
-    href: "/aplicacion/perfil",
+    href: "/aplicacion/estudiantes",
     rol: [3,5],
   },
   {
@@ -22,7 +22,7 @@ export const rutas: Ruta[] = [
   },
   {
     label: "Reportes",
-    href: "/aplicacion/reportes",
+    href: "/aplicacion/reportesBecario",
     rol: [5,3],
   },
   {

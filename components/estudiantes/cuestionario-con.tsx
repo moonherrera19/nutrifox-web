@@ -36,7 +36,7 @@ const formSchema = z.object({
   estatus: z.boolean(),
 });
 
-export function EstudiantesForm() {
+export function cuestionarioForm() {
   const fetchWithAuth = useApi();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -220,7 +220,9 @@ export function EstudiantesForm() {
   <Button type="submit" className="w-1/3"> 
     Enviar
   </Button>
-  
+  <Button type="submit" className="w-1/3">
+    Modificar
+  </Button>
 </div>
       </form>
     </Form>

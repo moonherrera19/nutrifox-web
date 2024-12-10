@@ -1,3 +1,13 @@
+import { EstudianteCard } from "@/components/estudiantes/datos-credencial";
+
 export default function Page() {
-  return <h1></h1>;
+  return (
+    <EstudianteCard
+      nombre=""
+      apellido=""
+      numeroControl=""
+      grado=""
+      grupo=""
+    />
+  );
 }
