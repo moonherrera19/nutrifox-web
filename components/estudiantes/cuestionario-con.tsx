@@ -4,46 +4,48 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
 import {
   Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
+  FormControl,
   FormRootError,
 } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch"; 
-import useApi from "@/lib/api";
+// import useApi from "@/lib/api";
 
 // Validación del formulario
 const formSchema = z.object({
-  nombre: z.string().min(10, { message: "Coloca un nombre valido" }),
-  apellido: z.string().min(10, { message: "Coloca un apellido valido" }),
+  nombre: z.string().min(3, { message: "Coloca un nombre valido" }),
+  apellidos: z.string().min(3, { message: "Coloca un apellido valido" }),
   numeroControl: z
     .string()
-    .min(10, { message: "Coloca el número de control valido" }),
-  grado: z.string().min(10, { message: "Coloca un grado valido" }),
-  grupo: z.string().min(10, { message: "Coloca un grupo valido" }),
-  domicilio: z.string().min(10, { message: "Coloca un domicilio valido" }),
+    .min(8, { message: "Coloca el número de control valido" }),
+  grado: z.string().min(1, { message: "Coloca un grado valido" }),
+  grupo: z.string().min(1, { message: "Coloca un grupo valido" }),
+  domicilio: z.string().min(5, { message: "Coloca un domicilio valido" }),
   curp: z.any().refine((file) => file?.length == 1, "Coloca una imagen valida"),
   credencial: z
     .any()
     .refine((file) => file?.length == 1, "Coloca una imagen valida"),
-  estatus: z.boolean(),
 });
 
-export function cuestionarioForm() {
-  const fetchWithAuth = useApi();
+import { useAtom } from "jotai";
+import { userAtom } from "@/store/sesion-store";
+
+export function EstudiantesForm() {
+  // const fetchWithAuth = useApi();
+  const [user] = useAtom(userAtom);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       nombre: "",
-      apellido: "",
+      apellidos: "",
       numeroControl: "",
       grado: "",
       grupo: "",
@@ -60,26 +62,33 @@ export function cuestionarioForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const formData = new FormData();
     formData.append("nombre", values.nombre);
-    formData.append("apellido", values.apellido);
+    formData.append("apellidos", values.apellidos);
     formData.append("numeroControl", values.numeroControl);
     formData.append("grado", values.grado);
     formData.append("grupo", values.grupo);
     formData.append("domicilio", values.domicilio);
+    formData.append("idUsuario", `${user?.idUsuario}`);
 
     if (values.curp[0]) formData.append("curp", values.curp[0]);
-    if (values.credencial[0]) formData.append("credencial", values.credencial[0]);
+    if (values.credencial[0])
+      formData.append("credencial", values.credencial[0]);
 
-    const resp = await fetchWithAuth("/estudiantes", {
+    // const res = await fetchWithAuth("/estudiantes", {
+    //   method: "POST",
+    //   body: formData,
+    // });
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/estudiantes`, {
       method: "POST",
       body: formData,
     });
 
     // Log the response to check for success or errors
-    console.log(resp);
-    console.log(await resp.json());
+    console.log(res);
+    console.log(await res.json());
 
     // Optionally, you can handle the response here, e.g., show a success message or error message to the user
-    if (resp.ok) {
+    if (res.ok) {
       // Show success message
     } else {
       // Show error message
@@ -106,7 +115,7 @@ export function cuestionarioForm() {
 
         <FormField
           control={form.control}
-          name="apellido"
+          name="apellidos"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Apellido:</FormLabel>
@@ -212,18 +221,12 @@ export function cuestionarioForm() {
           )}
         />
 
-        
-        
-
         <FormRootError />
-        <div className="flex gap-16 justify-center"> 
-  <Button type="submit" className="w-1/3"> 
-    Enviar
-  </Button>
-  <Button type="submit" className="w-1/3">
-    Modificar
-  </Button>
-</div>
+        <div className="flex gap-16 justify-center">
+          <Button type="submit" className="w-1/3">
+            Enviar
+          </Button>
+        </div>
       </form>
     </Form>
   );

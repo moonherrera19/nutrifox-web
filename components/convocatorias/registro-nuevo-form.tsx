@@ -29,7 +29,7 @@ import { Switch } from "@/components/ui/switch";
 
 import { es } from "date-fns/locale";
 
-import useApi from "@/lib/api";
+// import useApi from "@/lib/api";
 
 const formSchema = z.object({
   nombre: z.string().min(10, { message: "Coloca un nombre valido" }),
@@ -52,7 +52,7 @@ const formSchema = z.object({
 });
 
 export function ConvocatoriaForm() {
-  const fetchWithAuth = useApi();
+  // const fetchWithAuth = useApi();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

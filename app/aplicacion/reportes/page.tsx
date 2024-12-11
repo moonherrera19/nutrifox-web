@@ -1,4 +1,6 @@
-import { EstudiantesForm } from "@/components/estudiantes/lista-datos";
 export default function Page() {
-  return <EstudiantesForm />;
+  return <div>
+    <h2 className="font-bold text-3xl">Reportes</h2>
+    <p>En construcción...</p>
+  </div>
 }

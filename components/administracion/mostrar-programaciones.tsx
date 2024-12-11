@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import * as React from "react";
 import {
@@ -92,7 +92,9 @@ export const columns: ColumnDef<Payment>[] = [
 
           // 2. Actualizar la data en la tabla (opcional, si la API no retorna la data actualizada)
           const newData = [...table.options.data];
-          const rowIndex = newData.findIndex((item) => item.id === row.original.id);
+          const rowIndex = newData.findIndex(
+            (item) => item.id === row.original.id
+          );
           newData[rowIndex].completado = !completado;
           table.setData(newData);
         } catch (error) {
@@ -111,7 +113,7 @@ export const columns: ColumnDef<Payment>[] = [
       );
     },
   },
- 
+
   {
     accessorKey: "comentario",
     header: "Comentario",
@@ -121,9 +123,13 @@ export const columns: ColumnDef<Payment>[] = [
     header: "Fecha de Visita",
     cell: ({ row }) => {
       const fecha = new Date(row.getValue("fechaVisita"));
-      const opciones: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-      return fecha.toLocaleDateString('es-ES', opciones);
-    }
+      const opciones: Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
+      return fecha.toLocaleDateString("es-ES", opciones);
+    },
   },
 ];
 

@@ -13,26 +13,49 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormRootError,
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 
-const preguntasSchema = z.object({
-  id: z.string(),
-  respuesta: z.string().min(1, { message: "Selecciona una respuesta" }),
-});
+const radioGroupOptions = [
+  "Excelente",
+  "Mucha",
+  "Normal",
+  "En desacuerdo",
+  "Totalmente en desacuerdo",
+];
 
 const FormSchema = z.object({
-  kardex: z.any().refine((file) => file?.length == 1, "Sube tu kardex"),
+  kardex: z.any().refine((file) => file?.length === 1, "Sube tu kardex"),
   cartaMotivos: z
     .any()
-    .refine((file) => file?.length == 1, "Sube tu carta de motivos"),
-  respuestas: z.array(preguntasSchema), // No se define la longitud, se obtendrá de la API
+    .refine((file) => file?.length === 1, "Sube tu carta de motivos"),
+  respuestas: z.array(
+    z.object({
+      idPregunta: z.number(),
+      respuesta: z.string().min(1, { message: "Selecciona una respuesta" }),
+    })
+  ),
 });
 
-export default function PreguntasForm() {
-  const [preguntas, setPreguntas] = useState<string[]>([]);
+type Pregunta = {
+  idPregunta: number;
+  titulo: string;
+};
+
+import { useAtom } from "jotai";
+import { userAtom } from "@/store/sesion-store";
+
+export default function PreguntasForm({
+  idConvocatoria,
+}: {
+  idConvocatoria: string;
+}) {
+  const [preguntas, setPreguntas] = useState<Pregunta[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [user] = useAtom(userAtom);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -41,8 +64,10 @@ export default function PreguntasForm() {
       cartaMotivos: undefined,
       respuestas: [],
     },
+    mode: "all",
   });
 
+  const { reset } = form;
   const kardexRef = form.register("kardex");
   const cartaMotivosRef = form.register("cartaMotivos");
 
@@ -52,37 +77,57 @@ export default function PreguntasForm() {
         const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/preguntas`);
         const data = await res.json();
         setPreguntas(data);
+        reset({
+          kardex: undefined,
+          cartaMotivos: undefined,
+          respuestas: data.map((pregunta: Pregunta) => ({
+            idPregunta: pregunta.idPregunta,
+            respuesta: "",
+          })),
+        });
       } catch (error) {
         console.error("Error al obtener las preguntas:", error);
-        // Manejar el error, mostrar un mensaje al usuario, etc.
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchPreguntas();
-  }, []);
+  }, [reset]);
 
   async function onSubmit(values: z.infer<typeof FormSchema>) {
     const formData = new FormData();
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_API}/estudiantes/usuario/${user?.idUsuario}`
+    );
+    const estudiante = await response.json();
+
+    formData.append("idConvocatoria", idConvocatoria);
+    formData.append("idEstudiante", estudiante.idEstudiante);
     formData.append("kardex", values.kardex[0]);
     formData.append("cartaMotivos", values.cartaMotivos[0]);
-    values.respuestas.forEach((answer, index) => {
-      formData.append(`respuestas[${index}]`, answer.respuesta);
+    values.respuestas.forEach((respuesta) => {
+      formData.append(
+        `respuestas`,
+        JSON.stringify({
+          idPregunta: respuesta.idPregunta,
+          respuesta: respuesta.respuesta,
+        })
+      );
     });
 
-    // Aquí debes enviar el formData a tu API
-    console.log("FormData:", formData);
-    // ... lógica para enviar el formulario ...
-  }
+    console.log(values);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/solicitudes`, {
+      method: "POST",
+      body: formData,
+    });
 
-  const radioGroupOptions = [
-    "Excelente",
-    "Mucha",
-    "Normal",
-    "Casi nula",
-    "Nula",
-  ];
+    console.log(res);
+    console.log(await res.json());
+
+    // Aquí debes enviar el formData a tu API
+  }
 
   if (isLoading) {
     return <div>Cargando preguntas...</div>;
@@ -90,7 +135,7 @@ export default function PreguntasForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         {/* Campo para subir kardex */}
         <FormField
           control={form.control}
@@ -136,14 +181,21 @@ export default function PreguntasForm() {
           <FormField
             key={index}
             control={form.control}
-            name={`respuestas.${index}`}
+            name={`respuestas.${index}.respuesta`}
             render={({ field }) => (
               <FormItem className="space-y-3">
                 <FormLabel>{pregunta.titulo}</FormLabel>
                 <FormControl>
                   <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value.respuesta}
+                    onValueChange={(value) =>
+                      field.onChange({
+                        target: {
+                          value,
+                          name: `respuestas.${index}.respuesta`,
+                        },
+                      })
+                    }
+                    value={field.value || ""}
                     className="flex flex-col space-y-1"
                   >
                     {radioGroupOptions.map((option) => (
@@ -165,6 +217,7 @@ export default function PreguntasForm() {
           />
         ))}
         <Button type="submit">Enviar</Button>
+        <FormRootError />
       </form>
     </Form>
   );
