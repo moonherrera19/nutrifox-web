@@ -37,7 +37,7 @@ export const rutas: Ruta[] = [
   },
   {
     label: "Reportes",
-    href: "/aplicacion/reportesTS",
+    href: "/aplicacion/tsReportes",
     rol: [4,1],
   },
   {
@@ -63,7 +63,7 @@ export const rutas: Ruta[] = [
   {
     label: "Lista de Solicitantes",
     href: "/aplicacion/listaSolicitantes",
-    rol: [2,1],
+    rol: [2,1,4],
   },
   {
     label: "Nueva Convocatoria",
