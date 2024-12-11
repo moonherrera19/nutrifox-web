@@ -1,6 +1,6 @@
 
 
-import { EstudiantesForm } from "@/components/estudiantes/lista-datos";
+import {TableBecarios } from "@/components/administracion/lista-becarios";
 export default function Page() {
-  return <EstudiantesForm />;
+  return <TableBecarios />;
 }

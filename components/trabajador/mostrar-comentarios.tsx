@@ -39,7 +39,7 @@ export function TableComentarios() {
 
   return (
     <Table>
-      <TableCaption>Lista de comentarios.</TableCaption>
+      <TableCaption>Lista de Reportes.</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead>ID Comentario</TableHead>
