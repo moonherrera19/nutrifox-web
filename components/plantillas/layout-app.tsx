@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
 
 import BarraLateral from "./barra-lateral";
 import { rutas } from "@/lib/rutas";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function Component({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -47,6 +48,7 @@ export default function Component({ children }: { children: React.ReactNode }) {
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarInset>
+      <Toaster />
     </SidebarProvider>
   );
 }

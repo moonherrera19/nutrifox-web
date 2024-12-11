@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch"; 
 import useApi from "@/lib/api";
 
 // Validación del formulario

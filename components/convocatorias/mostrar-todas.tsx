@@ -1,5 +1,5 @@
 "use client";
-import useApi from "@/lib/api";
+// import useApi from "@/lib/api";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -12,6 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+
+import Link from "next/link";
 
 interface Imagen {
   type: string;
@@ -26,19 +28,21 @@ interface Convocatoria {
   fechaFin: string;
   imagen: Imagen;
   nombre: string;
+  estatus: boolean;
 }
 
 export default function MostrarConvocatorias() {
-  const fetchWithAuth = useApi();
+  // const fetchWithAuth = useApi();
   const [convocatorias, setConvocatorias] = useState<Convocatoria[] | []>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       // const res = await fetchWithAuth("/convocatorias");
-      const res = await fetch("http://localhost:3001/convocatorias");
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_API}/convocatorias`
+      );
       const data = await res.json();
       setConvocatorias(data);
-      console.log(data);
     };
     fetchData();
   }, []);
@@ -117,12 +121,26 @@ export default function MostrarConvocatorias() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button
-                className="w-full"
-                onClick={() => downloadImage(convocatoria)}
-              >
-                Descargar convocatoria
-              </Button>
+              <div className="grid grid-cols-2 gap-2 w-full">
+                {convocatoria.estatus ? (
+                  <Button
+                    className="w-full bg-black hover:opacity-85	hover:bg-black"
+                    asChild
+                  >
+                    <Link href="/aplicacion/solicitudes/aplicar">Aplicar</Link>
+                  </Button>
+                ) : (
+                  <Button className="w-full" variant="destructive" disabled>
+                    Convocatoria cerrada
+                  </Button>
+                )}
+                <Button
+                  className="w-full"
+                  onClick={() => downloadImage(convocatoria)}
+                >
+                  Descargar convocatoria
+                </Button>
+              </div>
             </CardFooter>
           </Card>
         ))

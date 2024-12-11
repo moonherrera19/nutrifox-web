@@ -1,7 +1,5 @@
-import MostrarConvocatorias from "@/components/convocatorias/mostrar-todas"
+import MostrarConvocatorias from "@/components/convocatorias/mostrar-todas";
 
-export default function Page(){
-    return (
-        <MostrarConvocatorias />
-    )
+export default function Page() {
+  return <MostrarConvocatorias />;
 }
